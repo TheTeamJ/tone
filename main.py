@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 from tone import createTone, pasteLayers, resizeToFitLongSide
 
-# raw_file_name = 'kimikura.jpg'
 raw_file_name ='thai_curry.jpg'
-
+# 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
+thumbnail_size = 1000
+tone_base = 1.50
 # thresholds = [50, 75, 100, 125, 150, 175, 200, 205, 215]
 # tone_thresholds = [1.75, 2.00, 2.50, 3.50, 4.50, 5.00, 7.50, 20.00]
 thresholds = [50, 75, 100, 125, 150, 175, 200, 215] # for ~1000px
 tone_thresholds = [1.75, 2, 2.5, 3.25, 7.25, 10.50, 20.25] # for ~1000px
 
-tone_base = 1.50
 
 # 2枚の画像の差分を求めてみよう
 def generateImgBinDiffs (img_gray):
@@ -35,7 +35,8 @@ def convertToTransparent (img, file_name):
 
 img = cv2.imread('raw/' + raw_file_name)
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-img_gray = resizeToFitLongSide(img_gray, 1000) # 縮小
+if thumbnail_size:
+  img_gray = resizeToFitLongSide(img_gray, thumbnail_size)
 cv2.imwrite('out/gray.' + raw_file_name, img_gray)
 
 # 下地画像をつくる

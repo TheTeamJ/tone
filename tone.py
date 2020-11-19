@@ -4,8 +4,7 @@ import numpy as np
 
 # グレースケールのみ対応
 def pil2cv (image):
-  new_image = np.array(image, dtype=np.uint8)
-  return new_image
+  return np.array(image, dtype=np.uint8)
 
 def createTone (src_path, out_width, out_height):
   print(src_path)
@@ -19,6 +18,7 @@ def createTone (src_path, out_width, out_height):
     for j in range(0, dst_size, tone_size):
       im_dst.paste(im, (i, j))
   # 切り抜く
+  # XXX: 中央付近をcropしたほうがいいかも？
   im_out = im_dst.crop(box=(0, 0, out_width, out_height))
   return pil2cv(im_out)
 
