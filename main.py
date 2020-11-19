@@ -24,16 +24,15 @@ def generateImgBinDiffs (img_gray):
     diffs.append(cv2.bitwise_not(cv2.absdiff(img_bin_0, img_bin_1)))
   return diffs
 
-def convertToTransparent (img, fileName):
+def convertToTransparent (img, file_name):
   img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
   img_bgra = np.concatenate([img_bgr, np.full((h, w, 1), 255, dtype=np.uint8)], axis=-1)
   white = np.all(img_bgr == [255, 255, 255], axis=-1)
   img_bgra[white, -1] = 0
-  file_path = 'out/' + fileName
+  file_path = 'out/' + file_name
   cv2.imwrite(file_path, img_bgra)
   return file_path
 
-layer_file_paths = []
 img = cv2.imread('raw/' + raw_file_name)
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 img_gray = resizeToFitLongSide(img_gray, 1000) # 縮小
@@ -42,17 +41,19 @@ cv2.imwrite('out/gray.' + raw_file_name, img_gray)
 # 下地画像をつくる
 ret, img_bin = cv2.threshold(img_gray, thresholds[0], 255, cv2.THRESH_BINARY)
 h, w = img_bin.shape
-imgTone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
-masked = cv2.bitwise_or(img_bin, imgTone)
+img_tone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
+masked = cv2.bitwise_or(img_bin, img_tone)
+layer_file_paths = []
 layer_file_paths.append(convertToTransparent(masked, 'base.masked.png'))
 
+# 密度の異なる点描パターンレイヤーを重ねていく
 img_bin_diffs = generateImgBinDiffs(img_gray)
 for i in range(0, len(thresholds) - 1):
   img_bin_diff = img_bin_diffs[i]
   h, w = img_bin_diff.shape
-  imgTone = createTone('tone72/{:.2f}.png'.format(tone_thresholds[i]), w, h)
+  img_tone = createTone('tone72/{:.2f}.png'.format(tone_thresholds[i]), w, h)
   # マスク処理にはbitwise_or関数を用いる
-  masked = cv2.bitwise_or(img_bin_diff, imgTone)
+  masked = cv2.bitwise_or(img_bin_diff, img_tone)
   file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png')
   layer_file_paths.append(file_path)
 

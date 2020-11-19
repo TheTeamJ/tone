@@ -4,48 +4,46 @@ import numpy as np
 
 # グレースケールのみ対応
 def pil2cv (image):
-  newImage = np.array(image, dtype=np.uint8)
-  return newImage
+  new_image = np.array(image, dtype=np.uint8)
+  return new_image
 
-def createTone (srcPath, outWidth, outHeight):
-  print(srcPath)
-  im = Image.open(srcPath)
+def createTone (src_path, out_width, out_height):
+  print(src_path)
+  im = Image.open(src_path)
   # 台紙を作成
-  toneSize = 500
-  scale = math.ceil(max(outWidth, outHeight) / float(toneSize))
-  dstSize = int(toneSize * scale)
-  imDst = Image.new(mode='L', size=(dstSize, dstSize), color=0)
-  for i in range(0, dstSize, toneSize):
-    for j in range(0, dstSize, toneSize):
-      imDst.paste(im, (i, j))
+  tone_size = 500
+  scale = math.ceil(max(out_width, out_height) / float(tone_size))
+  dst_size = int(tone_size * scale)
+  im_dst = Image.new(mode='L', size=(dst_size, dst_size), color=0)
+  for i in range(0, dst_size, tone_size):
+    for j in range(0, dst_size, tone_size):
+      im_dst.paste(im, (i, j))
   # 切り抜く
-  imOut = imDst.crop(box=(0, 0, outWidth, outHeight))
-  return pil2cv(imOut)
+  im_out = im_dst.crop(box=(0, 0, out_width, out_height))
+  return pil2cv(im_out)
 
-def pasteLayers (imgBase, layerPaths, outFileName='a.png'):
-  outFileName = '.'.join(outFileName.split('.')[:-1]) + '.png'
-  outFilePath = 'out/' + outFileName
+def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
+  out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.png'
+  out_file_path = 'out/' + out_file_name
   try:
-    os.remove(outFilePath)
+    os.remove(out_file_path)
   except:
     pass
-  print(layerPaths)
+  print(layer_paths)
 
-  h, w = imgBase.shape
-  imDst = Image.new(mode='RGBA', size=(w, h), color=(255, 255, 255, 255)) # (0, 0, 0, 0)
-  for layerPath in layerPaths:
-    im = Image.open(layerPath)
-    imDst.paste(im, (0, 0), im)
-  cv2.imwrite(outFilePath, pil2cv(imDst))
+  h, w = img_base.shape
+  im_dst = Image.new(mode='RGBA', size=(w, h), color=(255, 255, 255, 255)) # (0, 0, 0, 0)
+  for layer_path in layer_paths:
+    im = Image.open(layer_path)
+    im_dst.paste(im, (0, 0), im)
+  cv2.imwrite(out_file_path, pil2cv(im_dst))
 
-def resizeToFitLongSide (imgBase, size=1000):
-  h, w = imgBase.shape
-  # if max(h, w) <= size:
-    # return imgBase
+def resizeToFitLongSide (img_base, size=1000):
+  h, w = img_base.shape
   if w >= h:
     h = int(size * (h / w))
     w = size
   else:
     w = int(size * (w / h))
     h = size
-  return cv2.resize(imgBase, (w, h))
+  return cv2.resize(img_base, (w, h))
