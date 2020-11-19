@@ -29,7 +29,7 @@ def convertToTransparent (img, file_name):
   img_bgra = np.concatenate([img_bgr, np.full((h, w, 1), 255, dtype=np.uint8)], axis=-1)
   white = np.all(img_bgr == [255, 255, 255], axis=-1)
   img_bgra[white, -1] = 0
-  file_path = 'out/' + file_name
+  file_path = 'tmp/' + file_name
   cv2.imwrite(file_path, img_bgra)
   return file_path
 
