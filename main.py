@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from tone import createTone, pasteLayers, resizeToFitLongSide
 
-raw_file_name ='thai_curry.jpg'
+raw_file_name = 'thai_curry.jpg'
 # 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
 thumbnail_size = 1000
 histogram_equalization = False
@@ -39,8 +39,17 @@ def getThresholds (width, height):
     tone_thresholds = [1.75, 2, 2.5, 3.25, 7.25, 10.50, 20.25]
   return (thresholds, tone_thresholds)
 
+def loadRawImage (file_path):
+  img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+  h, w, a = img.shape
+  if a <= 3:
+    return img
+  transparent_mask = img[:, :, 3] == 0
+  img[transparent_mask] = [255, 255, 255, 255]
+  return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+
 if __name__ == '__main__':
-  img = cv2.imread('raw/' + raw_file_name)
+  img = loadRawImage('raw/' + raw_file_name)
   img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   if thumbnail_size:
     img_gray = resizeToFitLongSide(img_gray, thumbnail_size)
