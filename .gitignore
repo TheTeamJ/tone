@@ -1,7 +1,9 @@
 tmp/*
 !tmp/.gitkeep
-out/*
+out/*.png
 !out/.gitkeep
+out/gray/*
+!out/gray/.gitkeep
 raw/*
 !raw/thai_curry.jpg
 
