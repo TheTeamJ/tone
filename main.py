@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from tone import createTone, pasteLayers, resizeToFitLongSide
 
-raw_file_name ='thai_curry.jpg'
+raw_file_name = 'thai_curry.jpg'
 # 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
 thumbnail_size = 1000
 histogram_equalization = False
