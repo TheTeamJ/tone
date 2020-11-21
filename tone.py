@@ -30,6 +30,7 @@ def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
   except:
     pass
   print(layer_paths)
+  print(out_file_path)
 
   h, w = img_base.shape
   im_dst = Image.new(mode='RGBA', size=(w, h), color=(255, 255, 255, 255)) # (0, 0, 0, 0)
