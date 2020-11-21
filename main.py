@@ -6,11 +6,6 @@ raw_file_name ='thai_curry.jpg'
 # 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
 thumbnail_size = 1000
 tone_base = 1.50
-# thresholds = [50, 75, 100, 125, 150, 175, 200, 205, 215]
-# tone_thresholds = [1.75, 2.00, 2.50, 3.50, 4.50, 5.00, 7.50, 20.00]
-thresholds = [50, 75, 100, 125, 150, 175, 200, 215] # for ~1000px
-tone_thresholds = [1.75, 2, 2.5, 3.25, 7.25, 10.50, 20.25] # for ~1000px
-
 
 # 2枚の画像の差分を求めてみよう
 def generateImgBinDiffs (img_gray):
@@ -33,29 +28,42 @@ def convertToTransparent (img, file_name):
   cv2.imwrite(file_path, img_bgra)
   return file_path
 
-img = cv2.imread('raw/' + raw_file_name)
-img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-if thumbnail_size:
-  img_gray = resizeToFitLongSide(img_gray, thumbnail_size)
-cv2.imwrite('out/gray.' + raw_file_name, img_gray)
+def getThresholds (width, height):
+  size = max(width, height)
+  if size > 1000:
+    thresholds = [50, 75, 100, 125, 150, 175, 200, 205, 215]
+    tone_thresholds = [1.75, 2.00, 2.50, 3.50, 4.50, 5.00, 7.50, 20.00]
+  else:
+    # for ~1000px
+    thresholds = [50, 75, 100, 125, 150, 175, 200, 215]
+    tone_thresholds = [1.75, 2, 2.5, 3.25, 7.25, 10.50, 20.25]
+  return (thresholds, tone_thresholds)
 
-# 下地画像をつくる
-ret, img_bin = cv2.threshold(img_gray, thresholds[0], 255, cv2.THRESH_BINARY)
-h, w = img_bin.shape
-img_tone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
-masked = cv2.bitwise_or(img_bin, img_tone)
-layer_file_paths = []
-layer_file_paths.append(convertToTransparent(masked, 'base.masked.png'))
+if __name__ == '__main__':
+  img = cv2.imread('raw/' + raw_file_name)
+  img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  if thumbnail_size:
+    img_gray = resizeToFitLongSide(img_gray, thumbnail_size)
+  cv2.imwrite('out/gray.' + raw_file_name, img_gray)
 
-# 密度の異なる点描パターンレイヤーを重ねていく
-img_bin_diffs = generateImgBinDiffs(img_gray)
-for i in range(0, len(thresholds) - 1):
-  img_bin_diff = img_bin_diffs[i]
-  h, w = img_bin_diff.shape
-  img_tone = createTone('tone72/{:.2f}.png'.format(tone_thresholds[i]), w, h)
-  # マスク処理にはbitwise_or関数を用いる
-  masked = cv2.bitwise_or(img_bin_diff, img_tone)
-  file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png')
-  layer_file_paths.append(file_path)
+  # 下地画像をつくる
+  h, w = img_gray.shape
+  thresholds, tone_thresholds = getThresholds(w, h)
+  ret, img_bin = cv2.threshold(img_gray, thresholds[0], 255, cv2.THRESH_BINARY)
+  img_tone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
+  masked = cv2.bitwise_or(img_bin, img_tone)
+  layer_file_paths = []
+  layer_file_paths.append(convertToTransparent(masked, 'base.masked.png'))
 
-pasteLayers(img_bin, layer_file_paths, raw_file_name)
+  # 密度の異なる点描パターンレイヤーを重ねていく
+  img_bin_diffs = generateImgBinDiffs(img_gray)
+  for i in range(0, len(thresholds) - 1):
+    img_bin_diff = img_bin_diffs[i]
+    h, w = img_bin_diff.shape
+    img_tone = createTone('tone72/{:.2f}.png'.format(tone_thresholds[i]), w, h)
+    # マスク処理にはbitwise_or関数を用いる
+    masked = cv2.bitwise_or(img_bin_diff, img_tone)
+    file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png')
+    layer_file_paths.append(file_path)
+
+  pasteLayers(img_bin, layer_file_paths, raw_file_name)
