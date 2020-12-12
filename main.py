@@ -31,7 +31,7 @@ def convertToTransparent (img, file_name):
 
 def getThresholds (width, height):
   size = max(width, height)
-  if size > 1000:
+  if size >= 1000:
     thresholds = [50, 75, 100, 125, 150, 175, 200, 205, 215]
     tone_thresholds = [1.75, 2.00, 2.50, 3.50, 4.50, 5.00, 7.50, 20.00]
   else:
@@ -62,19 +62,19 @@ if __name__ == '__main__':
 
   # 下地画像をつくる
   h, w = img_gray.shape
-  thresholds, tone_thresholds = getThresholds(w, h)
+  thresholds, tone_densities = getThresholds(w, h)
   ret, img_bin = cv2.threshold(img_gray, thresholds[0], 255, cv2.THRESH_BINARY)
   img_tone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
-  masked = cv2.bitwise_or(img_bin, img_tone)
+  masked_base = cv2.bitwise_or(img_bin, img_tone)
   layer_file_paths = []
-  layer_file_paths.append(convertToTransparent(masked, 'base.masked.png'))
+  layer_file_paths.append(convertToTransparent(masked_base, 'base.masked.png'))
 
   # 密度の異なる点描パターンレイヤーを重ねていく
   img_bin_diffs = generateImgBinDiffs(img_gray)
   for i in range(0, len(thresholds) - 1):
     img_bin_diff = img_bin_diffs[i]
     h, w = img_bin_diff.shape
-    img_tone = createTone('tone72/{:.2f}.png'.format(tone_thresholds[i]), w, h)
+    img_tone = createTone('tone72/{:.2f}.png'.format(tone_densities[i]), w, h)
     # マスク処理にはbitwise_or関数を用いる
     masked = cv2.bitwise_or(img_bin_diff, img_tone)
     file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png')
