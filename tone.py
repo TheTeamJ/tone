@@ -10,12 +10,12 @@ def createTone (src_path, out_width, out_height):
   print(src_path)
   im = Image.open(src_path)
   # 台紙を作成
-  tone_size = 500
-  scale = math.ceil(max(out_width, out_height) / float(tone_size))
-  dst_size = int(tone_size * scale)
+  unit_size = 500
+  scale = math.ceil(max(out_width, out_height) / float(unit_size))
+  dst_size = int(unit_size * scale)
   im_dst = Image.new(mode='L', size=(dst_size, dst_size), color=0)
-  for i in range(0, dst_size, tone_size):
-    for j in range(0, dst_size, tone_size):
+  for i in range(0, dst_size, unit_size):
+    for j in range(0, dst_size, unit_size):
       im_dst.paste(im, (i, j))
   # 切り抜く
   # XXX: 中央付近をcropしたほうがいいかも？
