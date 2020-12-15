@@ -24,6 +24,7 @@ def convertToTransparent (img, file_name):
   img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
   img_bgra = np.concatenate([img_bgr, np.full((h, w, 1), 255, dtype=np.uint8)], axis=-1)
   white = np.all(img_bgr == [255, 255, 255], axis=-1)
+  # white = np.all(img_bgr != [0, 0, 0], axis=-1)
   img_bgra[white, -1] = 0
   file_path = 'tmp/' + file_name
   cv2.imwrite(file_path, img_bgra)
@@ -31,7 +32,7 @@ def convertToTransparent (img, file_name):
 
 def getThresholds (width, height):
   size = max(width, height)
-  if size >= 1000:
+  if size > 1000:
     thresholds = [50, 75, 100, 125, 150, 175, 200, 205, 215]
     tone_thresholds = [1.75, 2.00, 2.50, 3.50, 4.50, 5.00, 7.50, 20.00]
   else:
