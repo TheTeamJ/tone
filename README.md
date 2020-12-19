@@ -12,7 +12,7 @@ $ BASE_DIR_NAME="./" python3 main.py
 
 ## Flask app
 ```
-$ BASE_DIR_NAME="/tmp/tone/" python3 app.py
+$ BASE_DIR_NAME="/tmp/tone/" DEBUG=yes python3 app.py
 ```
 
 ## Docker

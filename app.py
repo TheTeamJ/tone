@@ -2,7 +2,7 @@ import validators
 from flask import Flask, request, send_file
 from download import download_image
 from main import main
-from lib import create_dirs
+from lib import create_dirs, is_debug
 
 app = Flask(__name__)
 
@@ -54,4 +54,4 @@ def convert():
 
 if __name__ == '__main__':
   create_dirs()
-  app.run(host="localhost", port=8080, debug=True)
+  app.run(host="localhost", port=8080, debug=is_debug())

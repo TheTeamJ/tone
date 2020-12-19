@@ -26,3 +26,9 @@ def create_dirs():
     dir_path = base_dir + dir_name
     if not os.path.exists(dir_path):
       os.makedirs(dir_path)
+
+def is_debug():
+  debug = os.environ.get('DEBUG', False)
+  if debug == 'yes':
+    return True
+  return False
