@@ -22,8 +22,8 @@ def createTone (src_path, out_width, out_height):
   im_out = im_dst.crop(box=(0, 0, out_width, out_height))
   return pil2cv(im_out)
 
-def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
-  out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.png'
+def pasteLayers (img_base, layer_paths, out_file_name='a.webp'):
+  out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.webp'
   out_file_path = base_dir + 'out/' + out_file_name
   try:
     os.remove(out_file_path)
@@ -36,7 +36,10 @@ def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
   for layer_path in layer_paths:
     im = Image.open(layer_path)
     im_dst.paste(im, (0, 0), im)
-  cv2.imwrite(out_file_path, pil2cv(im_dst))
+  # im_dst = pil2cv(im_dst)
+  # im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
+  # cv2.imwrite(out_file_path, im_dst)
+  im_dst.save(out_file_path, 'webp')
   return out_file_path
 
 def resizeToFitLongSide (img_base, size=1000):

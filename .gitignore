@@ -1,6 +1,8 @@
 tmp/*
 !tmp/.gitkeep
 out/*.png
+out/*.jpg
+out/*.webp
 !out/.gitkeep
 out/gray/*
 !out/gray/.gitkeep

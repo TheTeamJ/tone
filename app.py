@@ -56,7 +56,7 @@ def convert():
     print(e)
     return 'Error: %s' % e, 500
 
-  return send_file(output_file_path, as_attachment=False, mimetype='image/png')
+  return send_file(output_file_path, as_attachment=False, mimetype='image/webp')
 
 if __name__ == '__main__':
   create_dirs()
