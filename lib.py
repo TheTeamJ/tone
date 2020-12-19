@@ -1,6 +1,9 @@
-import os
+import os, sys
 
 base_dir = os.environ.get('BASE_DIR_NAME', './')
+if base_dir.startswith('/') and not base_dir.startswith('/tmp/'):
+  print('Invalid base_dir:', base_dir)
+  sys.exit(1)
 # base_dir = '/tmp/'
 
 def remove_tmp_files(image_name, thresholds):

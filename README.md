@@ -4,7 +4,13 @@
 
 ![](https://gyazo.com/6cd408b0031ae0e14b225450cf135515/raw)
 
+## CLI demo
 ```
 $ pip3 install -r requirements.txt
-$ python3 main.py
+$ BASE_DIR_NAME="./" python3 main.py
+```
+
+## Flask app
+```
+$ BASE_DIR_NAME="/tmp/tone/" python3 app.py
 ```
