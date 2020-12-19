@@ -14,3 +14,9 @@ $ BASE_DIR_NAME="./" python3 main.py
 ```
 $ BASE_DIR_NAME="/tmp/tone/" python3 app.py
 ```
+
+## Docker
+```
+$ docker build -t daiiz/tone:1.0 .
+$ docker run -p 8080:8080 -it daiiz/tone:1.0
+```
