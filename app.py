@@ -1,10 +1,15 @@
 import validators
 from flask import Flask, request, send_file
+from flask_compress import Compress
 from download import download_image
 from main import main
 from lib import create_dirs, is_debug
 
 app = Flask(__name__)
+app.config["COMPRESS_MIMETYPES"] = ["image/png"]
+app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
+compress = Compress()
+compress.init_app(app)
 
 def parse_thumbnail_size(request):
   size_range = [100, 2000]
@@ -24,6 +29,7 @@ def parse_histogram_equalization(request):
   return True
 
 @app.route("/", methods=["GET"])
+@compress.compressed()
 def convert():
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
