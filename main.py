@@ -2,14 +2,8 @@ import cv2
 import numpy as np
 from tone import createTone, pasteLayers, resizeToFitLongSide
 
-raw_file_name = 'thai_curry.jpg'
-# 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
-thumbnail_size = 1000
-histogram_equalization = False
-tone_base = 1.50
-
 # 2枚の画像の差分を求めてみよう
-def generateImgBinDiffs (img_gray):
+def generateImgBinDiffs (img_gray, thresholds):
   diffs = []
   for i in range(0, len(thresholds)):
     if i == len(thresholds) - 1: continue
@@ -20,9 +14,9 @@ def generateImgBinDiffs (img_gray):
     diffs.append(cv2.bitwise_not(cv2.absdiff(img_bin_0, img_bin_1)))
   return diffs
 
-def convertToTransparent (img, file_name):
+def convertToTransparent (img, file_name, width, height):
   img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-  img_bgra = np.concatenate([img_bgr, np.full((h, w, 1), 255, dtype=np.uint8)], axis=-1)
+  img_bgra = np.concatenate([img_bgr, np.full((height, width, 1), 255, dtype=np.uint8)], axis=-1)
   white = np.all(img_bgr == [255, 255, 255], axis=-1)
   # white = np.all(img_bgr != [0, 0, 0], axis=-1)
   img_bgra[white, -1] = 0
@@ -49,7 +43,7 @@ def loadRawImage (file_path):
   img[transparent_mask] = [255, 255, 255, 255]
   return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
-if __name__ == '__main__':
+def main (raw_file_name, thumbnail_size, histogram_equalization=False, tone_base=1.50):
   img = loadRawImage('raw/' + raw_file_name)
   img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   if thumbnail_size:
@@ -68,17 +62,25 @@ if __name__ == '__main__':
   img_tone = createTone('tone72/{:.2f}.png'.format(tone_base), w, h)
   masked_base = cv2.bitwise_or(img_bin, img_tone)
   layer_file_paths = []
-  layer_file_paths.append(convertToTransparent(masked_base, 'base.masked.png'))
+  layer_file_paths.append(convertToTransparent(masked_base, 'base.masked.png', w, h))
 
   # 密度の異なる点描パターンレイヤーを重ねていく
-  img_bin_diffs = generateImgBinDiffs(img_gray)
+  img_bin_diffs = generateImgBinDiffs(img_gray, thresholds)
   for i in range(0, len(thresholds) - 1):
     img_bin_diff = img_bin_diffs[i]
     h, w = img_bin_diff.shape
     img_tone = createTone('tone72/{:.2f}.png'.format(tone_densities[i]), w, h)
     # マスク処理にはbitwise_or関数を用いる
     masked = cv2.bitwise_or(img_bin_diff, img_tone)
-    file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png')
+    file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png', w, h)
     layer_file_paths.append(file_path)
 
   pasteLayers(img_bin, layer_file_paths, raw_file_name)
+
+if __name__ == '__main__':
+  main(
+    raw_file_name='thai_curry.jpg',
+    thumbnail_size=1000, # 矩形の長辺のピクセル数 (オリジナルサイズの場合はNone)
+    histogram_equalization=False,
+    tone_base=1.50
+  )
