@@ -38,6 +38,7 @@ def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
     im = Image.open(layer_path)
     im_dst.paste(im, (0, 0), im)
   cv2.imwrite(out_file_path, pil2cv(im_dst))
+  return out_file_path
 
 def resizeToFitLongSide (img_base, size=1000):
   h, w = img_base.shape

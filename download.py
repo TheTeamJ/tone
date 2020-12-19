@@ -26,11 +26,12 @@ def download_image(url):
   res.raise_for_status()
   raise_for_content_type(res)
   md5 = hashlib.md5(url.encode('utf-8')).hexdigest()
-  file_path = './raw/%s%s' % (md5, get_ext(res))
+  file_name = '%s%s' % (md5, get_ext(res))
+  file_path = './raw/%s' % file_name
   with open(file_path, 'wb') as fp:
     fp.write(res.content)
   print('Saved:', file_path)
-
+  return file_name
 
 if __name__ == '__main__':
   download_image('https://gyazo.com/a8aa160d71d86a164fac95dcc5146997/raw')

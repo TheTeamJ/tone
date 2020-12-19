@@ -43,7 +43,7 @@ def loadRawImage (file_path):
   img[transparent_mask] = [255, 255, 255, 255]
   return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
-def main (raw_file_name, thumbnail_size, histogram_equalization=False, tone_base=1.50):
+def main (raw_file_name, thumbnail_size=1000, histogram_equalization=False, tone_base=1.50):
   img = loadRawImage('raw/' + raw_file_name)
   img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   if thumbnail_size:
@@ -75,7 +75,8 @@ def main (raw_file_name, thumbnail_size, histogram_equalization=False, tone_base
     file_path = convertToTransparent(masked, str(thresholds[i]) + '.masked.png', w, h)
     layer_file_paths.append(file_path)
 
-  pasteLayers(img_bin, layer_file_paths, raw_file_name)
+  out_file_path = pasteLayers(img_bin, layer_file_paths, raw_file_name)
+  return out_file_path
 
 if __name__ == '__main__':
   main(
