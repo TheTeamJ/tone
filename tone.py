@@ -8,7 +8,6 @@ def pil2cv (image):
   return np.array(image, dtype=np.uint8)
 
 def createTone (src_path, out_width, out_height):
-  print(src_path)
   im = Image.open(src_path)
   # 台紙を作成
   unit_size = 500
