@@ -28,9 +28,8 @@ def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
   out_file_path = base_dir + 'out/' + out_file_name
   try:
     os.remove(out_file_path)
-  except:
-    pass
-  # print(layer_paths)
+  except Exception as e:
+    print(e)
   print(out_file_path)
 
   h, w = img_base.shape

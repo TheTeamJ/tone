@@ -1,7 +1,4 @@
 import os
-# def get_dir_path(dir_name, image_name):
-#   if not dir_name or not image_name:
-#     raise Exception('dir_name and image_name are required.')
 
 # base_dir = './'
 base_dir = './tmproot/'
