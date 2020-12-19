@@ -31,5 +31,4 @@ def download_image(url):
   file_path = base_dir + 'raw/%s' % file_name
   with open(file_path, 'wb') as fp:
     fp.write(res.content)
-  print('Saved:', file_path)
   return file_name

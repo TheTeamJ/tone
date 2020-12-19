@@ -1,7 +1,7 @@
 import os
 
-# base_dir = './'
-base_dir = './tmproot/'
+base_dir = os.environ.get('BASE_DIR_NAME', './')
+# base_dir = '/tmp/'
 
 def remove_tmp_files(image_name, thresholds):
   if not image_name:
@@ -17,6 +17,7 @@ def remove_tmp_files(image_name, thresholds):
       os.remove(tmp_file_path)
 
 def create_dirs():
+  print('base_dir:', base_dir)
   dir_names = ['tmp', 'raw', 'out']
   for dir_name in dir_names:
     dir_path = base_dir + dir_name
