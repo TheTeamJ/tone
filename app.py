@@ -15,8 +15,13 @@ def parse_thumbnail_size(request):
       size = size_range[0]
   except Exception as e:
     print(e)
-  print('size: %s' % size)
   return size
+
+def parse_histogram_equalization(request):
+  auto = request.args.get("auto", "")
+  if auto == '' or auto == 'no' or auto == '0':
+    return False
+  return True
 
 @app.route("/", methods=["GET"])
 def convert():
@@ -24,6 +29,7 @@ def convert():
   if not validators.url(image_url):
     return 'Invalid URL: %s\n' % image_url, 400
   size = parse_thumbnail_size(request)
+  auto = parse_histogram_equalization(request)
 
   # 画像をダウンロード
   input_file_name = ''
@@ -38,7 +44,8 @@ def convert():
   # 画像を点描画に変換
   output_file_path = ''
   try:
-    output_file_path = main(input_file_name, size)
+    print(size, auto)
+    output_file_path = main(input_file_name, thumbnail_size=size, histogram_equalization=auto)
   except Exception as e:
     print(e)
     return 'Error: %s' % e, 500
