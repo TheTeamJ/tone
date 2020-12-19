@@ -1,7 +1,8 @@
 import validators
-from flask import Flask, request
+from flask import Flask, request, send_file
 from download import download_image
 from main import main
+from lib import create_dirs
 
 app = Flask(__name__)
 
@@ -42,7 +43,8 @@ def convert():
     print(e)
     return 'Error: %s' % e, 500
 
-  return 'OK: %s\n' % output_file_path
+  return send_file(output_file_path, as_attachment=False, mimetype='image/png')
 
 if __name__ == '__main__':
+  create_dirs()
   app.run(host="localhost", port=8080, debug=True)

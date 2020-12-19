@@ -1,6 +1,7 @@
 from PIL import Image
 import os, math, cv2
 import numpy as np
+from lib import base_dir
 
 # グレースケールのみ対応
 def pil2cv (image):
@@ -24,12 +25,12 @@ def createTone (src_path, out_width, out_height):
 
 def pasteLayers (img_base, layer_paths, out_file_name='a.png'):
   out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.png'
-  out_file_path = 'out/' + out_file_name
+  out_file_path = base_dir + 'out/' + out_file_name
   try:
     os.remove(out_file_path)
   except:
     pass
-  print(layer_paths)
+  # print(layer_paths)
   print(out_file_path)
 
   h, w = img_base.shape
