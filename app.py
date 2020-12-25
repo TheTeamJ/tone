@@ -56,7 +56,7 @@ def convert():
     print(e)
     return 'Error: %s' % e, 500
 
-  if out_file_path == '':
+  if output_file_path == '':
     return 'Error: output_file_path is empty.\n', 500
 
   return send_file(output_file_path, as_attachment=False, mimetype='image/webp')

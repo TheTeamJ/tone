@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from tone import createTone, pasteLayers, resizeToFitLongSide
-from lib import base_dir, remove_tmp_files
+from lib import base_dir, remove_tmp_files, remove_raw_file
 
 # 2枚の画像の差分を求めてみよう
 def generateImgBinDiffs (img_gray, thresholds):
@@ -78,6 +78,7 @@ def main (raw_file_name, thumbnail_size=1000, histogram_equalization=False, tone
 
   out_file_path = pasteLayers(img_bin, layer_file_paths, raw_file_name)
   remove_tmp_files(raw_file_name, thresholds)
+  remove_raw_file(raw_file_name)
   return out_file_path
 
 if __name__ == '__main__':
