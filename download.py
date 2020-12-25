@@ -23,6 +23,7 @@ def get_ext(res):
     return '.jpg'
 
 def download_image(url):
+  url = url.split('?')[0]
   res = requests.get(url, stream=True)
   res.raise_for_status()
   raise_for_content_type(res)
