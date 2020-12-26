@@ -1,0 +1,7 @@
+Pillow == 7.0.0
+numpy == 1.18.1
+opencv-python == 4.2.0.32
+Flask == 1.1.2
+Flask-Compress == 1.8.0
+requests == 2.22.0
+validators == 0.18.2
