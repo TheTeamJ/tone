@@ -19,6 +19,13 @@ def remove_tmp_files(image_name, thresholds):
     if os.path.exists(tmp_file_path):
       os.remove(tmp_file_path)
 
+def remove_raw_file(image_name):
+  if not image_name:
+    raise Exception('image_name is required.')
+  raw_file_path = base_dir + 'raw/' + image_name
+  if os.path.exists(raw_file_path):
+    os.remove(raw_file_path)
+
 def create_dirs():
   print('base_dir:', base_dir)
   dir_names = ['tmp', 'raw', 'out']
@@ -26,3 +33,9 @@ def create_dirs():
     dir_path = base_dir + dir_name
     if not os.path.exists(dir_path):
       os.makedirs(dir_path)
+
+def is_debug():
+  debug = os.environ.get('DEBUG', False)
+  if debug == 'yes':
+    return True
+  return False

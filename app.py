@@ -1,10 +1,15 @@
 import validators
 from flask import Flask, request, send_file
+from flask_compress import Compress
 from download import download_image
 from main import main
-from lib import create_dirs
+from lib import create_dirs, is_debug
 
 app = Flask(__name__)
+app.config["COMPRESS_MIMETYPES"] = ["image/png"]
+app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
+compress = Compress()
+compress.init_app(app)
 
 def parse_thumbnail_size(request):
   size_range = [100, 2000]
@@ -24,6 +29,7 @@ def parse_histogram_equalization(request):
   return True
 
 @app.route("/", methods=["GET"])
+@compress.compressed()
 def convert():
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
@@ -39,7 +45,7 @@ def convert():
     return 'Invalid request: %s\n' % e, 400
 
   if not input_file_name:
-    return 'Error: input_file_name is empty.\n' % e, 500
+    return 'Error: input_file_name is empty.\n', 500
 
   # 画像を点描画に変換
   output_file_path = ''
@@ -50,8 +56,15 @@ def convert():
     print(e)
     return 'Error: %s' % e, 500
 
-  return send_file(output_file_path, as_attachment=False, mimetype='image/png')
+  if output_file_path == '':
+    return 'Error: output_file_path is empty.\n', 500
+
+  return send_file(output_file_path, as_attachment=False, mimetype='image/webp')
+
+@app.route("/robots.txt")
+def robots():
+  return send_file('./public/robots.txt', as_attachment=False, mimetype='text/plain')
 
 if __name__ == '__main__':
   create_dirs()
-  app.run(host="localhost", port=8080, debug=True)
+  app.run(host="localhost", port=8080, debug=is_debug())

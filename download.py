@@ -1,4 +1,4 @@
-import requests, hashlib
+import requests, hashlib, secrets
 from lib import base_dir
 
 def raise_for_content_type(res):
@@ -23,11 +23,13 @@ def get_ext(res):
     return '.jpg'
 
 def download_image(url):
+  url = url.split('?')[0]
   res = requests.get(url, stream=True)
   res.raise_for_status()
   raise_for_content_type(res)
   md5 = hashlib.md5(url.encode('utf-8')).hexdigest()
-  file_name = '%s%s' % (md5, get_ext(res))
+  sec = secrets.token_hex(16)
+  file_name = '%s_%s%s' % (md5, sec, get_ext(res))
   file_path = base_dir + 'raw/%s' % file_name
   with open(file_path, 'wb') as fp:
     fp.write(res.content)
