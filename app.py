@@ -28,6 +28,12 @@ def parse_histogram_equalization(request):
     return False
   return True
 
+def parse_output_format(request):
+  png = request.args.get("png", "")
+  if png == '' or png == 'no' or png == '0':
+    return 'webp'
+  return 'png'
+
 @app.route("/", methods=["GET"])
 @compress.compressed()
 def convert():
@@ -36,6 +42,7 @@ def convert():
     return 'Invalid URL: %s\n' % image_url, 400
   size = parse_thumbnail_size(request)
   auto = parse_histogram_equalization(request)
+  save_format = parse_output_format(request)
 
   # 画像をダウンロード
   input_file_name = ''
@@ -51,7 +58,12 @@ def convert():
   output_file_path = ''
   try:
     print(size, auto)
-    output_file_path = main(input_file_name, thumbnail_size=size, histogram_equalization=auto)
+    output_file_path = main(
+      input_file_name,
+      thumbnail_size=size,
+      histogram_equalization=auto,
+      save_format=save_format
+    )
   except Exception as e:
     print(e)
     return 'Error: %s' % e, 500
@@ -59,7 +71,7 @@ def convert():
   if output_file_path == '':
     return 'Error: output_file_path is empty.\n', 500
 
-  return send_file(output_file_path, as_attachment=False, mimetype='image/webp')
+  return send_file(output_file_path, as_attachment=False, mimetype='image/' + save_format)
 
 @app.route("/robots.txt")
 def robots():

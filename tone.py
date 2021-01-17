@@ -22,8 +22,8 @@ def createTone (src_path, out_width, out_height):
   im_out = im_dst.crop(box=(0, 0, out_width, out_height))
   return pil2cv(im_out)
 
-def pasteLayers (img_base, layer_paths, out_file_name='out.webp'):
-  out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.webp'
+def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='webp'):
+  out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.' + save_format
   out_file_path = base_dir + 'out/' + out_file_name
   try:
     os.remove(out_file_path)
