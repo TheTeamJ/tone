@@ -28,6 +28,12 @@ def parse_histogram_equalization(request):
     return False
   return True
 
+def parse_output_options_png(request):
+  png = request.args.get("png", "")
+  if png == '' or png == 'no' or png == '0':
+    return False
+  return True
+
 @app.route("/", methods=["GET"])
 @compress.compressed()
 def convert():
@@ -36,6 +42,7 @@ def convert():
     return 'Invalid URL: %s\n' % image_url, 400
   size = parse_thumbnail_size(request)
   auto = parse_histogram_equalization(request)
+  png = parse_output_options_png(request)
 
   # 画像をダウンロード
   input_file_name = ''
