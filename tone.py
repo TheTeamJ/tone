@@ -22,7 +22,8 @@ def createTone (src_path, out_width, out_height):
   im_out = im_dst.crop(box=(0, 0, out_width, out_height))
   return pil2cv(im_out)
 
-def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='webp'):
+def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='webp', \
+  binarization_threshold=None):
   out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.' + save_format
   out_file_path = base_dir + 'out/' + out_file_name
   try:
@@ -38,6 +39,11 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
     im_dst.paste(im, (0, 0), im)
   im_dst = pil2cv(im_dst)
   im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
+
+  # 要求に応じて二値化する
+  if binarization_threshold is not None:
+    _, im_dst = cv2.threshold(im_dst, binarization_threshold, 255, cv2.THRESH_BINARY)
+
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
 
