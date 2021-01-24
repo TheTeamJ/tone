@@ -34,6 +34,16 @@ def parse_output_format(request):
     return 'webp'
   return 'png'
 
+def parse_bin_threshold(request):
+  threshold = request.args.get("bin", "")
+  parsed_threshold = None
+  try:
+    parsed_threshold = int(threshold)
+    parsed_threshold = max(0, min(parsed_threshold, 255))
+  except:
+    pass
+  return parsed_threshold
+
 @app.route("/", methods=["GET"])
 @compress.compressed()
 def convert():
@@ -43,6 +53,7 @@ def convert():
   size = parse_thumbnail_size(request)
   auto = parse_histogram_equalization(request)
   save_format = parse_output_format(request)
+  threshold = parse_bin_threshold(request)
 
   # 画像をダウンロード
   input_file_name = ''
