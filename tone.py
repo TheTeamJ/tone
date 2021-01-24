@@ -42,7 +42,7 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
 
   # 要求に応じて二値化する
   if binarization_threshold is not None:
-    print("####", binarization_threshold)
+    _, im_dst = cv2.threshold(im_dst, binarization_threshold, 255, cv2.THRESH_BINARY)
 
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
