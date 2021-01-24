@@ -34,7 +34,7 @@ def parse_output_format(request):
     return 'webp'
   return 'png'
 
-def parse_bin_threshold(request):
+def parse_binarization_threshold(request):
   threshold = request.args.get("bin", "")
   parsed_threshold = None
   try:
@@ -53,7 +53,7 @@ def convert():
   size = parse_thumbnail_size(request)
   auto = parse_histogram_equalization(request)
   save_format = parse_output_format(request)
-  threshold = parse_bin_threshold(request)
+  threshold = parse_binarization_threshold(request)
 
   # 画像をダウンロード
   input_file_name = ''
@@ -73,7 +73,8 @@ def convert():
       input_file_name,
       thumbnail_size=size,
       histogram_equalization=auto,
-      save_format=save_format
+      save_format=save_format,
+      binarization_threshold=threshold
     )
   except Exception as e:
     print(e)
