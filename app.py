@@ -1,11 +1,21 @@
-import validators
+import os, validators
 from flask import Flask, request, send_file
 from flask_compress import Compress
+from flask_cors import CORS
 from download import download_image
 from main import main
 from lib import create_dirs, is_debug
+from recaptcha import verify_recaptcha_v3
+
+allow_origins = ['playground.daiiz.dev']
+if os.environ.get('DEV_MODE', '0') == '1':
+  allow_origins.append('http://localhost:3003')
+  print('allow_origins:', allow_origins)
 
 app = Flask(__name__)
+CORS(app, resources={
+  r"/api/generate": {"origins": allow_origins, "methods": ['POST']}
+})
 app.config["COMPRESS_MIMETYPES"] = ["image/png"]
 app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
 compress = Compress()
@@ -45,8 +55,16 @@ def parse_binarization_threshold(request):
   return parsed_threshold
 
 @app.route("/", methods=["GET"])
+@app.route("/api/generate", methods=["POST"])
 @compress.compressed()
 def convert():
+  # POSTリクエストの場合はreCAPTCHAの検証を行う
+  # https://developers.google.com/recaptcha/docs/verify
+  if request.method == 'POST':
+    recaptchaToken = request.get_json().get('recaptchaToken', None)
+    if not verify_recaptcha_v3(recaptchaToken):
+      return 'Invalid request.\n', 400
+
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
     return 'Invalid URL: %s\n' % image_url, 400
