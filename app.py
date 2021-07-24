@@ -51,8 +51,12 @@ def parse_binarization_threshold(request):
 @app.route("/", methods=["GET", "POST"])
 @compress.compressed()
 def convert():
+  # POSTリクエストの場合はreCAPTCHAの検証を行う
   if request.method == 'POST':
-    print("#### check")
+    print('validate reCAPTCHA')
+    recaptchaToken = request.get_json().get('recaptchaToken', None)
+    print(recaptchaToken)
+
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
     return 'Invalid URL: %s\n' % image_url, 400
