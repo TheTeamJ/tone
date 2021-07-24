@@ -10,5 +10,5 @@ def verify_recaptcha_v3(recaptcha_token):
   url = f'https://www.google.com/recaptcha/api/siteverify?secret={recaptcha_secret_key}&response={recaptcha_token}'
   data = requests.post(url).json()
   success = data.get('success', False)
-  print('reCAPTCHA score:', data.get('score'))
+  print('reCAPTCHA score:', data.get('score'), success)
   return success
