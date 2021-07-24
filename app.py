@@ -1,11 +1,15 @@
 import validators
 from flask import Flask, request, send_file
 from flask_compress import Compress
+from flask_cors import CORS
 from download import download_image
 from main import main
 from lib import create_dirs, is_debug
 
 app = Flask(__name__)
+CORS(app, resources={
+  r"/*": {"origins": ["http://localhost:3003"], "methods": ["POST"]}
+})
 app.config["COMPRESS_MIMETYPES"] = ["image/png"]
 app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
 compress = Compress()
@@ -44,9 +48,11 @@ def parse_binarization_threshold(request):
     pass
   return parsed_threshold
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 @compress.compressed()
 def convert():
+  if request.method == 'POST':
+    print("#### check")
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
     return 'Invalid URL: %s\n' % image_url, 400
