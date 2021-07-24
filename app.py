@@ -5,6 +5,7 @@ from flask_cors import CORS
 from download import download_image
 from main import main
 from lib import create_dirs, is_debug
+from recaptcha import verify_recaptcha_v3
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -52,10 +53,11 @@ def parse_binarization_threshold(request):
 @compress.compressed()
 def convert():
   # POSTリクエストの場合はreCAPTCHAの検証を行う
+  # https://developers.google.com/recaptcha/docs/verify
   if request.method == 'POST':
-    print('validate reCAPTCHA')
     recaptchaToken = request.get_json().get('recaptchaToken', None)
-    print(recaptchaToken)
+    if not verify_recaptcha_v3(recaptchaToken):
+      return 'Invalid request.\n', 400
 
   image_url = request.args.get("url", "")
   if not validators.url(image_url):
