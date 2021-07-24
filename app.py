@@ -1,4 +1,4 @@
-import validators
+import os, validators
 from flask import Flask, request, send_file
 from flask_compress import Compress
 from flask_cors import CORS
@@ -7,9 +7,14 @@ from main import main
 from lib import create_dirs, is_debug
 from recaptcha import verify_recaptcha_v3
 
+allow_origins = ['playground.daiiz.dev']
+if os.environ.get('DEV_MODE', '0') == '1':
+  allow_origins.append('http://localhost:3003')
+  print('allow_origins:', allow_origins)
+
 app = Flask(__name__)
 CORS(app, resources={
-  r"/*": {"origins": ["http://localhost:3003"], "methods": ["POST"]}
+  r"/*": {"origins": allow_origins, "methods": ['POST']}
 })
 app.config["COMPRESS_MIMETYPES"] = ["image/png"]
 app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
