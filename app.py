@@ -14,7 +14,7 @@ if os.environ.get('DEV_MODE', '0') == '1':
 
 app = Flask(__name__)
 CORS(app, resources={
-  r"/*": {"origins": allow_origins, "methods": ['POST']}
+  r"/api/generate": {"origins": allow_origins, "methods": ['POST']}
 })
 app.config["COMPRESS_MIMETYPES"] = ["image/png"]
 app.config["COMPRESS_ALGORITHM"] = ["gzip", "deflate"]
@@ -54,7 +54,8 @@ def parse_binarization_threshold(request):
     pass
   return parsed_threshold
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
+@app.route("/api/generate", methods=["POST"])
 @compress.compressed()
 def convert():
   # POSTリクエストの場合はreCAPTCHAの検証を行う
