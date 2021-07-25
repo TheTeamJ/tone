@@ -79,7 +79,7 @@ def main (raw_file_name, save_format='webp', thumbnail_size=1000, \
     layer_file_paths.append(file_path)
 
   out_file_path = pasteLayers(img_bin, layer_file_paths, raw_file_name, \
-    save_format, binarization_threshold)
+    save_format, binarization_threshold, base_image_mode)
   remove_tmp_files(raw_file_name, thresholds)
   remove_raw_file(raw_file_name)
   return out_file_path

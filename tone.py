@@ -23,7 +23,7 @@ def createTone (src_path, out_width, out_height):
   return pil2cv(im_out)
 
 def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='webp', \
-  binarization_threshold=None):
+  binarization_threshold=None, base_image_mode='White'):
   out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.' + save_format
   out_file_path = base_dir + 'out/' + out_file_name
   try:
@@ -33,6 +33,7 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
   print(out_file_path)
 
   h, w = img_base.shape
+  # 背景色 (黒以外の箇所の色) はここで制御できる
   im_dst = Image.new(mode='RGBA', size=(w, h), color=(255, 255, 255, 255))
   for layer_path in layer_paths:
     im = Image.open(layer_path)
