@@ -5,7 +5,9 @@ from lib import base_dir
 
 BASE_IMAGE_MODE_W = 'White'
 BASE_IMAGE_MODE_T = 'Transparent'
-BASE_IMAGE_MODE_C = 'Color' # 原画との合成
+# 原画との合成
+BASE_IMAGE_MODE_C0 = 'Color0' # 黒色領域を塗りつぶす
+BASE_IMAGE_MODE_C1 = 'Color1' # 白色(透明)領域を塗りつぶす
 
 # グレースケールのみ対応
 def pil2cv (image):
@@ -26,8 +28,8 @@ def createTone (src_path, out_width, out_height):
   im_out = im_dst.crop(box=(0, 0, out_width, out_height))
   return pil2cv(im_out)
 
-def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='webp', \
-  binarization_threshold=None, base_image_mode='White'):
+def pasteLayers (img_raw, img_base, layer_paths, out_file_name='out.webp', \
+  save_format='webp', binarization_threshold=None, base_image_mode='White'):
   out_file_name = '.'.join(out_file_name.split('.')[:-1]) + '.' + save_format
   out_file_path = base_dir + 'out/' + out_file_name
   try:
@@ -47,12 +49,28 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
   if binarization_threshold is not None:
     _, im_dst = cv2.threshold(im_dst, binarization_threshold, 255, cv2.THRESH_BINARY)
     # 背景色 (黒以外の箇所の色) の透過処理はこのタイミングで行う
-    if base_image_mode in [BASE_IMAGE_MODE_T, BASE_IMAGE_MODE_C]:
+    if base_image_mode in [BASE_IMAGE_MODE_T, BASE_IMAGE_MODE_C0, BASE_IMAGE_MODE_C1]:
       white = np.all(im_dst == [255, 255, 255, 255], axis=-1)
       im_dst[white, -1] = 0
 
   if base_image_mode == BASE_IMAGE_MODE_W:
     im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
+  elif base_image_mode == BASE_IMAGE_MODE_C1:
+    # 透明の領域が原画の色で塗りつぶされるイメージの着色モード
+    im_dst_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2BGRA)
+    im_dst_raw = cv2.resize(im_dst_raw, (w, h))
+    # PILのデータ構造に変換
+    im_dst = Image.fromarray(im_dst)
+    im_dst_raw = Image.fromarray(im_dst_raw)
+    # 重ね合わせる
+    im_dst_raw.paste(im_dst, (0, 0), im_dst)
+    im_dst = pil2cv(im_dst_raw)
+  elif base_image_mode == BASE_IMAGE_MODE_C0:
+    # 黒色の箇所だけ着色されるモード (これもおもしろい)
+    im_dst_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2BGRA)
+    im_dst_raw = cv2.resize(im_dst_raw, (w, h))
+    im_dst = cv2.add(im_dst_raw, im_dst)
+
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
 
