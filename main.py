@@ -45,7 +45,8 @@ def loadRawImage (file_path):
   return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
 def main (raw_file_name, save_format='webp', thumbnail_size=1000, \
-  histogram_equalization=False, tone_base=1.50, binarization_threshold=None):
+  histogram_equalization=False, tone_base=1.50, binarization_threshold=None, \
+  base_image_mode='White'):
   img = loadRawImage(base_dir + 'raw/' + raw_file_name)
   img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   if thumbnail_size:
