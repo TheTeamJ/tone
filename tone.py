@@ -33,7 +33,6 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
   print(out_file_path)
 
   h, w = img_base.shape
-  # 背景色 (黒以外の箇所の色) はここで制御できる
   im_dst = Image.new(mode='RGBA', size=(w, h), color=(255, 255, 255, 255))
   for layer_path in layer_paths:
     im = Image.open(layer_path)
@@ -44,6 +43,7 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
   # 要求に応じて二値化する
   if binarization_threshold is not None:
     _, im_dst = cv2.threshold(im_dst, binarization_threshold, 255, cv2.THRESH_BINARY)
+    # 背景色 (黒以外の箇所の色) の透過処理はこのタイミングで行う
 
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
