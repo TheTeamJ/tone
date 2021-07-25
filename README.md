@@ -15,6 +15,11 @@ $ BASE_DIR_NAME="./" python3 main.py
 $ BASE_DIR_NAME="/tmp/tone/" DEBUG=yes python3 app.py
 ```
 
+## Flask app (local)
+```
+$ BASE_DIR_NAME="./tmp" DEBUG=yes python3 app.py
+```
+
 ## Docker
 ```
 $ docker build -t daiiz/tone:1.0 .
