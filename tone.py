@@ -53,6 +53,8 @@ def pasteLayers (img_base, layer_paths, out_file_name='out.webp', save_format='w
 
   if base_image_mode == BASE_IMAGE_MODE_W:
     im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
+  elif base_image_mode == BASE_IMAGE_MODE_C:
+    print('###!!!!!')
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
 
