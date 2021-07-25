@@ -59,7 +59,8 @@ def parse_base_image_mode(request):
   if base_image == 't':
     return 'Transparent'
   if base_image == 'c':
-    return 'Color'
+    return 'White'
+    # return 'Color'
   return 'White'
 
 @app.route("/", methods=["GET"])
