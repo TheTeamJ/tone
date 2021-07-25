@@ -10,7 +10,9 @@ raw/*
 !raw/thai_curry.jpg
 
 tmproot/*
+tmpraw/*
 tmpout/*
+tmptmp/*
 
 # https://scrapbox.io/teamj/Cloud_Run環境を設定してデプロイする
 deploy.sh
