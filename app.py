@@ -54,6 +54,14 @@ def parse_binarization_threshold(request):
     pass
   return parsed_threshold
 
+def parse_base_image(request):
+  base_image = request.args.get('base', '')
+  if base_image == 't':
+    return 'Transparent'
+  if base_image == 'c':
+    return 'Color'
+  return 'White'
+
 @app.route("/", methods=["GET"])
 @app.route("/api/generate", methods=["POST"])
 @compress.compressed()
@@ -72,6 +80,8 @@ def convert():
   auto = parse_histogram_equalization(request)
   save_format = parse_output_format(request)
   threshold = parse_binarization_threshold(request)
+  base_image = parse_base_image(request)
+  print("###", base_image)
 
   # 画像をダウンロード
   input_file_name = ''
