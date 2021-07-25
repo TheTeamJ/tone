@@ -56,6 +56,14 @@ def pasteLayers (img_raw, img_base, layer_paths, out_file_name='out.webp', \
   elif base_image_mode == BASE_IMAGE_MODE_C:
     im_dst_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2BGRA)
     im_dst_raw = cv2.resize(im_dst_raw, (w, h))
+    # PILのデータ構造に変換
+    im_dst = Image.fromarray(im_dst)
+    im_dst_raw = Image.fromarray(im_dst_raw)
+    # 黒色の箇所だけ着色されるモード (これもおもしろい)
+    # im_dst = cv2.add(im_dst_raw, im_dst)
+    # 透明の領域が原画の色で塗りつぶされるイメージの着色モード
+    im_dst_raw.paste(im_dst, (0, 0), im_dst)
+    im_dst = pil2cv(im_dst_raw)
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
 
