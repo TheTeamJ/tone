@@ -5,7 +5,9 @@ from lib import base_dir
 
 BASE_IMAGE_MODE_W = 'White'
 BASE_IMAGE_MODE_T = 'Transparent'
-BASE_IMAGE_MODE_C = 'Color' # 原画との合成
+# 原画との合成
+BASE_IMAGE_MODE_C0 = 'Color0' # 黒色領域を塗りつぶす
+BASE_IMAGE_MODE_C1 = 'Color1' # 白色(透明)領域を塗りつぶす
 
 # グレースケールのみ対応
 def pil2cv (image):
@@ -47,13 +49,13 @@ def pasteLayers (img_raw, img_base, layer_paths, out_file_name='out.webp', \
   if binarization_threshold is not None:
     _, im_dst = cv2.threshold(im_dst, binarization_threshold, 255, cv2.THRESH_BINARY)
     # 背景色 (黒以外の箇所の色) の透過処理はこのタイミングで行う
-    if base_image_mode in [BASE_IMAGE_MODE_T, BASE_IMAGE_MODE_C]:
+    if base_image_mode in [BASE_IMAGE_MODE_T, BASE_IMAGE_MODE_C0, BASE_IMAGE_MODE_C1]:
       white = np.all(im_dst == [255, 255, 255, 255], axis=-1)
       im_dst[white, -1] = 0
 
   if base_image_mode == BASE_IMAGE_MODE_W:
     im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
-  elif base_image_mode == BASE_IMAGE_MODE_C:
+  elif base_image_mode in [BASE_IMAGE_MODE_C0, BASE_IMAGE_MODE_C1]:
     im_dst_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2BGRA)
     im_dst_raw = cv2.resize(im_dst_raw, (w, h))
     # PILのデータ構造に変換

@@ -58,8 +58,10 @@ def parse_base_image_mode(request):
   base_image = request.args.get('base', '')
   if base_image == 't':
     return 'Transparent'
-  if base_image == 'c':
-    return 'Color'
+  elif base_image == 'c1' or base_image == 'c':
+    return 'Color1' # 白色(透明)箇所を塗りつぶす
+  elif base_image == 'c0':
+    return 'Color0'
   return 'White'
 
 @app.route("/", methods=["GET"])
