@@ -55,7 +55,7 @@ def pasteLayers (img_raw, img_base, layer_paths, out_file_name='out.webp', \
     im_dst = cv2.cvtColor(im_dst, cv2.COLOR_BGRA2GRAY)
   elif base_image_mode == BASE_IMAGE_MODE_C:
     im_dst_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2BGRA)
-    print('###!!!!!', np.shape(im_dst_raw), np.shape(im_dst))
+    im_dst_raw = cv2.resize(im_dst_raw, (w, h))
   cv2.imwrite(out_file_path, im_dst)
   return out_file_path
 
