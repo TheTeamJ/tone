@@ -6,4 +6,4 @@ Flask-Compress
 Flask-Cors
 requests
 validators
-dotenv
+python-dotenv
