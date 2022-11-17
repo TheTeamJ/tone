@@ -7,7 +7,10 @@ from main import main
 from lib import create_dirs, is_debug
 from recaptcha import verify_recaptcha_v3
 
-allow_origins = ['https://playground.daiiz.dev']
+allow_origins = [
+  'https://playground.daiiz.dev',
+  'https://pointillism.daiiz.dev'
+]
 if os.environ.get('DEV_MODE', '0') == '1':
   allow_origins.append('http://localhost:3003')
   print('allow_origins:', allow_origins)
