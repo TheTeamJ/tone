@@ -1,4 +1,6 @@
 import os, sys
+from dotenv import load_dotenv
+load_dotenv()
 
 base_dir = os.environ.get('BASE_DIR_NAME', './')
 if base_dir.startswith('/') and not base_dir.startswith('/tmp/'):

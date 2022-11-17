@@ -1,21 +1,27 @@
-import os, validators
+import os, validators, logging
 from flask import Flask, request, send_file
 from flask_compress import Compress
 from flask_cors import CORS
+from dotenv import load_dotenv
 from download import download_image
 from main import main
 from lib import create_dirs, is_debug
 from recaptcha import verify_recaptcha_v3
+
+load_dotenv()
+
+logging.basicConfig(level=logging.INFO)
+
+app = Flask(__name__)
 
 allow_origins = [
   'https://playground.daiiz.dev',
   'https://pointillism.daiiz.dev'
 ]
 if os.environ.get('DEV_MODE', '0') == '1':
-  allow_origins.append('http://localhost:3003')
-  print('allow_origins:', allow_origins)
+  allow_origins.append('http://localhost:3000')
+  app.logger.info('allow_origins: ' + ','.join(allow_origins))
 
-app = Flask(__name__)
 CORS(app, resources={
   r"/api/generate": {"origins": allow_origins, "methods": ['POST', 'OPTIONS']}
 })
@@ -124,4 +130,4 @@ def robots():
 
 if __name__ == '__main__':
   create_dirs()
-  app.run(host="localhost", port=8080, debug=is_debug())
+  app.run(host="0.0.0.0", port=8080, threaded=False, debug=is_debug())

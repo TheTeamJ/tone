@@ -1,4 +1,6 @@
 import os, requests
+from dotenv import load_dotenv
+load_dotenv()
 
 recaptcha_secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', None)
 
