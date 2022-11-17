@@ -88,7 +88,6 @@ def convert():
   image_url = request.args.get("url", "")
   if request.method == 'POST':
     image_data_uri = request.get_json().get('dataUri', None)
-    print('image_data_uri:', image_data_uri[0:200])
     if image_data_uri and image_data_uri.startswith('data:image/'):
       is_data_uri = True
       image_url = image_data_uri
