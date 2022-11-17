@@ -103,10 +103,7 @@ def convert():
   # 画像をダウンロード
   input_file_name = ''
   try:
-    if is_data_uri:
-      input_file_name = download_image(image_url, True)
-    else:
-      input_file_name = download_image(image_url)
+    input_file_name = download_image(image_url, is_data_uri)
   except Exception as e:
     return 'Invalid request: %s\n' % e, 400
 
