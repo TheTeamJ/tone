@@ -22,7 +22,7 @@ def get_ext(res):
   elif content_type in ['image/jpg', 'image/jpeg']:
     return '.jpg'
 
-def download_image(url):
+def download_image(url, is_data_uri = False): # ここから
   url = url.split('?')[0]
   res = requests.get(url, stream=True)
   res.raise_for_status()
