@@ -1,0 +1,13 @@
+# for development
+version: "2.1"
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./containers/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "8080:8080"
+    command: python3 app.py
+    tty: true
