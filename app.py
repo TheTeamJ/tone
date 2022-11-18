@@ -84,8 +84,15 @@ def convert():
     if not verify_recaptcha_v3(recaptchaToken):
       return 'Invalid request.\n', 400
 
+  is_data_uri = False
   image_url = request.args.get("url", "")
-  if not validators.url(image_url):
+  if request.method == 'POST':
+    image_data_uri = request.get_json().get('dataUri', None)
+    if image_data_uri and image_data_uri.startswith('data:image/'):
+      is_data_uri = True
+      image_url = image_data_uri
+
+  if not is_data_uri and not validators.url(image_url):
     return 'Invalid URL: %s\n' % image_url, 400
   size = parse_thumbnail_size(request)
   auto = parse_histogram_equalization(request)
@@ -96,7 +103,7 @@ def convert():
   # 画像をダウンロード
   input_file_name = ''
   try:
-    input_file_name = download_image(image_url)
+    input_file_name = download_image(image_url, is_data_uri)
   except Exception as e:
     return 'Invalid request: %s\n' % e, 400
 
