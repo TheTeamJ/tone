@@ -80,9 +80,12 @@ def convert():
   # POSTリクエストの場合はreCAPTCHAの検証を行う
   # https://developers.google.com/recaptcha/docs/verify
   if request.method == 'POST':
-    recaptchaToken = request.get_json().get('recaptchaToken', None)
-    if not verify_recaptcha_v3(recaptchaToken):
-      return 'Invalid request.\n', 400
+    client_name = request.get_json().get('client', '')
+    if client_name != 'playground':
+      recaptchaToken = request.get_json().get('recaptchaToken', None)
+      if not verify_recaptcha_v3(recaptchaToken):
+        return 'Invalid request.\n', 400
+    print("client_name:", client_name)
 
   is_data_uri = False
   image_url = request.args.get("url", "")
